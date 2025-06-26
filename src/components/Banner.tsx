@@ -3,9 +3,42 @@ import axiosInstance from "../api/axios";
 import movieRequests from "../api/request";
 import { AxiosResponse } from "axios";
 import { useState } from "react";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+`;
+
+const IframeContainer = styled.iframe`
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.65;
+  border: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const HomeContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const Banner = () => {
   const [movie, setMovie] = useState<any>(null);
+  const [isClicked, setIsClicked] = useState(false);
 
   // 상영중인 영화 정보 불러오기
   const fetchMovies = async () => {
@@ -31,9 +64,30 @@ const Banner = () => {
     return str?.length > n ? str.substring(0, n - 1) + "..." : str;
   };
 
+  // 영화 정보 1번만 불러오기
   useEffect(() => {
     fetchMovies();
   }, []);
+
+  if (isClicked) {
+    return (
+      <>
+        <Container>
+          <HomeContainer>
+            <IframeContainer
+              src={`https://www.youtube.com/embed/${movie?.videos?.results[0]?.key}?controls=0&autoplay=1&loop=1&mute=1&playlist=${movie?.videos?.results[0]?.key}`}
+              width="640"
+              height="360"
+              frameBorder="0"
+              allow="autoplay"
+              allowFullScreen
+            />
+          </HomeContainer>
+        </Container>
+        <button onClick={() => setIsClicked(false)}>Close</button>
+      </>
+    );
+  }
 
   return (
     <header
@@ -51,7 +105,12 @@ const Banner = () => {
         </h1>
         <div className="banner__buttons">
           {movie?.videos?.results[0]?.key && (
-            <button className="banner__button play">Play</button>
+            <button
+              className="banner__button play"
+              onClick={() => setIsClicked(true)}
+            >
+              Play
+            </button>
           )}
         </div>
       </div>
