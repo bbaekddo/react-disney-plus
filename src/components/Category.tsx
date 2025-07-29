@@ -47,7 +47,12 @@ const Wrap = styled.div`
 
   &:hover {
     box-shadow: rgb(0 0 0 / 80%) 0px 40px 58px -16px,
-                
+                rgb(0 0 0 / 73%) 0px 16px 10px -10px;
+    transform: scale(1.05);
+    border-color: rgba(249, 249, 249, 0.8);
+    video {
+      opacity: 1;
+    }
   }
 `;
 
@@ -55,9 +60,33 @@ const Category = () => {
   return (
     <Container>
       <Wrap>
-        <img src="/images/viewrs-disney.png" alt="Disney" />
+        <img src="/images/viewers-disney.png" alt="Disney" />
         <video autoPlay muted loop>
           <source src="/videos/disney.mp4" type="video/mp4" />
+        </video>
+      </Wrap>
+      <Wrap>
+        <img src="/images/viewers-pixar.png" alt="Pixar" />
+        <video autoPlay muted loop>
+          <source src="/videos/pixar.mp4" type="video/mp4" />
+        </video>
+      </Wrap>
+      <Wrap>
+        <img src="/images/viewers-marvel.png" alt="Marvel" />
+        <video autoPlay muted loop>
+          <source src="/videos/marvel.mp4" type="video/mp4" />
+        </video>
+      </Wrap>
+      <Wrap>
+        <img src="/images/viewers-starwars.png" alt="Star Wars" />
+        <video autoPlay muted loop>
+          <source src="/videos/star-wars.mp4" type="video/mp4" />
+        </video>
+      </Wrap>
+      <Wrap>
+        <img src="/images/viewers-national.png" alt="National Geographic" />
+        <video autoPlay muted loop>
+          <source src="/videos/national-geographic.mp4" type="video/mp4" />
         </video>
       </Wrap>
     </Container>
