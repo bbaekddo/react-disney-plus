@@ -3,6 +3,8 @@ import Nav from "./components/Nav";
 import styled from "styled-components";
 import Banner from "./components/Banner";
 import Category from "./components/Category";
+import Row from "./components/Row";
+import requests from "./api/request";
 
 const Container = styled.main`
   position: relative;
@@ -29,6 +31,7 @@ const App = () => {
       <Nav />
       <Banner />
       <Category />
+      <Row title="Trending Now" id="TN" fetchUrl={requests.fetchTrending} />
     </Container>
   );
 };
