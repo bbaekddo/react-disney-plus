@@ -1,48 +1,39 @@
-import React, { JSX } from "react";
+import { JSX } from "react";
 import "./App.css";
+import MainPage from "./pages/MainPage";
+import { Routes, Route, Outlet } from "react-router-dom";
 import Nav from "./components/Nav";
-import styled from "styled-components";
-import Banner from "./components/Banner";
-import Category from "./components/Category";
-import Row from "./components/Row";
-import requests from "./api/request";
+import LoginPage from "./pages/LoginPage";
+import DetailPage from "./pages/DetailPage";
+import SearchPage from "./pages/SearchPage";
 
 /**
- * 메인 컨테이너 스타일 컴포넌트
- * 배경 이미지와 레이아웃을 설정합니다.
+ * 기본 레이아웃
  */
-const Container = styled.main`
-  position: relative;
-  min-height: calc(100vh - 250px);
-  overflow-x: hidden;
-  display: block;
-  top: 72px;
-  padding: 0 calc(3.5vw + 5px);
-
-  &:after {
-    background: url("/images/home-background.png") center center / cover
-      no-repeat fixed;
-    content: "";
-    position: absolute;
-    inset: 0px;
-    opacity: 1;
-    z-index: -1;
-  }
-`;
+const Layout = (): JSX.Element => {
+  return (
+    <div>
+      <Nav />
+      <Outlet />
+    </div>
+  );
+};
 
 /**
- * 메인 애플리케이션 컴포넌트
- * Disney Plus 앱의 홈페이지를 렌더링합니다.
- * @returns {JSX.Element} 애플리케이션 JSX 엘리먼트
+ * 라우팅
  */
 const App = (): JSX.Element => {
   return (
-    <Container>
-      <Nav />
-      <Banner />
-      <Category />
-      <Row title="Trending Now" id="TN" fetchUrl={requests.fetchTrending} />
-    </Container>
+    <div className="app">
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<MainPage />} />
+          <Route path="main" element={<MainPage />} />
+          <Route path=":movieId" element={<DetailPage />} />
+          <Route path="search" element={<SearchPage />} />
+        </Route>
+      </Routes>
+    </div>
   );
 };
 
