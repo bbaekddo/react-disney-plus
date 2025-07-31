@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../api/axios";
 import "./Row.css";
 import MovieModal from "./MovieModal";
@@ -49,13 +49,18 @@ const Row = ({
         </div>
         <div id={id} className="row__posters">
           {movies.map((movie: any) => (
-            <img
+            <button
               key={movie.id}
+              type="button"
               className="row__poster"
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
               onClick={() => handleClick(movie)}
-            />
+              aria-label={`영화 ${movie.title} 선택`}
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+              />
+            </button>
           ))}
         </div>
         <div className="slider__arrow-right">

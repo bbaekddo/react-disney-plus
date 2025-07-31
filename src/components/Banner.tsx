@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../api/axios";
 import movieRequests from "../api/request";
-import { AxiosResponse } from "axios";
-import { useState } from "react";
+import type { AxiosResponse } from "axios";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -41,7 +40,7 @@ const Banner = () => {
   const [isClicked, setIsClicked] = useState(false);
 
   // 상영중인 영화 정보 불러오기
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async (): Promise<void> => {
     const getNowPlayingResponse: AxiosResponse = await axiosInstance.get(
       movieRequests.fetchNowPlaying
     );
@@ -57,17 +56,17 @@ const Banner = () => {
       params: { append_to_response: "videos" },
     });
     setMovie(movideMetadata.data);
-  };
+  }, []);
 
   // 영화 설명 단축
-  const truncateDescription = (str: string, n: number) => {
-    return str?.length > n ? str.substring(0, n - 1) + "..." : str;
+  const truncateDescription = (str: string, n: number): string => {
+    return str?.length > n ? `${str.substring(0, n - 1)}...` : str;
   };
 
   // 영화 정보 1번만 불러오기
   useEffect(() => {
     fetchMovies();
-  }, []);
+  }, [fetchMovies]);
 
   if (isClicked) {
     return (
@@ -84,7 +83,9 @@ const Banner = () => {
             />
           </HomeContainer>
         </Container>
-        <button onClick={() => setIsClicked(false)}>Close</button>
+        <button type="button" onClick={() => setIsClicked(false)}>
+          Close
+        </button>
       </>
     );
   }
@@ -106,6 +107,7 @@ const Banner = () => {
         <div className="banner__buttons">
           {movie?.videos?.results[0]?.key && (
             <button
+              type="button"
               className="banner__button play"
               onClick={() => setIsClicked(true)}
             >

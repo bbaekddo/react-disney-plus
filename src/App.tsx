@@ -1,4 +1,3 @@
-import { JSX } from "react";
 import "./App.css";
 import MainPage from "./pages/MainPage";
 import { Routes, Route, Outlet } from "react-router-dom";
@@ -10,7 +9,7 @@ import SearchPage from "./pages/SearchPage";
 /**
  * 기본 레이아웃
  */
-const Layout = (): JSX.Element => {
+const Layout = () => {
   return (
     <div>
       <Nav />
@@ -22,7 +21,7 @@ const Layout = (): JSX.Element => {
 /**
  * 라우팅
  */
-const App = (): JSX.Element => {
+const App = () => {
   return (
     <div className="app">
       <Routes>

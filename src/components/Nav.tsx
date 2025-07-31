@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import styled from "styled-components";
 
 // NavWrapper props 타입 정의
@@ -34,14 +34,14 @@ const Logo = styled.a`
   }
 `;
 
-const Nav: React.FC = () => {
+const Nav: React.FC = (): JSX.Element => {
   const [show, setShow] = useState<boolean>(false);
-  
+
   useEffect(() => {
     const handle_scroll = (): void => {
       window.scrollY > 50 ? setShow(true) : setShow(false);
     };
-    
+
     window.addEventListener("scroll", handle_scroll);
 
     return () => {
@@ -59,16 +59,13 @@ const Nav: React.FC = () => {
             window.location.assign("/");
           }}
           style={{
-            background: 'none',
-            border: 'none',
+            background: "none",
+            border: "none",
             padding: 0,
-            cursor: 'pointer'
+            cursor: "pointer",
           }}
         >
-          <img
-            alt="Disney Plus Logo"
-            src="/images/logo.svg"
-          />
+          <img alt="Disney Plus Logo" src="/images/logo.svg" />
         </button>
       </Logo>
     </NavWrapper>
