@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import "./App.css";
 import Nav from "./components/Nav";
 import styled from "styled-components";
@@ -6,13 +7,17 @@ import Category from "./components/Category";
 import Row from "./components/Row";
 import requests from "./api/request";
 
+/**
+ * 메인 컨테이너 스타일 컴포넌트
+ * 배경 이미지와 레이아웃을 설정합니다.
+ */
 const Container = styled.main`
   position: relative;
   min-height: calc(100vh - 250px);
   overflow-x: hidden;
-  display: blcok;
+  display: block;
   top: 72px;
-  padding: 0 cacl(3.5vw + 5px);
+  padding: 0 calc(3.5vw + 5px);
 
   &:after {
     background: url("/images/home-background.png") center center / cover
@@ -25,7 +30,12 @@ const Container = styled.main`
   }
 `;
 
-const App = () => {
+/**
+ * 메인 애플리케이션 컴포넌트
+ * Disney Plus 앱의 홈페이지를 렌더링합니다.
+ * @returns {JSX.Element} 애플리케이션 JSX 엘리먼트
+ */
+const App = (): JSX.Element => {
   return (
     <Container>
       <Nav />
