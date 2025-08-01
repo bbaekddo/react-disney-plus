@@ -1,56 +1,23 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import instance from "../../api/axios";
+import "./SearchPage.css";
+import useDebounce from "../../hooks/useDebounce";
 
-// styled components
-const Login = styled.a`
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 8px 16px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  border: 1px solid #f9f9f9;
-  transition: all 0.2s ease 0s;
-
-  &:hover {
-    background-color: #f9f9f9;
-    color: #000;
-    border-color: transparent;
-  }
-`;
-
-const SearchBox = styled.input`
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%, 0);
-  background-color: rbga(0, 0, 0, 0.582);
-  border-radius: 5px;
-  color: white;
-  padding: 5px;
-  border: none;
-`;
-
-// SearchPage 컴포넌트 (구현 예정)
+// SearchPage 컴포넌트
 const SearchPage = () => {
-  const { pathname } = useLocation();
-  const [searchValue, setSearchValue] = useState("");
   const [searchMovies, setSearchMovies] = useState<any>([]);
   const navigate = useNavigate();
-
-  // 검색어 변경 이벤트 핸들러
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-    navigate(`/search?query=${e.target.value}`);
-  };
 
   // 검색어를 가져오기 위한 커스텀 훅
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
   };
-  const searchParam: string | null = useQuery().get("query");
+  const searchParam: string = useQuery().get("query") || "";
+  const debouncedSearchParam: string = useDebounce(searchParam, 500);
 
   // 검색한 영화 조회
-  const fetchSearchMovie = async (searchMovie: string) => {
+  const fetchSearchMovie = useCallback(async (searchMovie: string) => {
     try {
       const response = await instance.get(
         `search/multi?include_adult=false&query=${searchMovie}`
@@ -61,28 +28,53 @@ const SearchPage = () => {
     } catch (err: any) {
       console.error(err);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (searchParam) {
-      fetchSearchMovie(searchParam);
+    if (debouncedSearchParam) {
+      fetchSearchMovie(debouncedSearchParam);
     }
-  }, [searchParam]);
+  }, [debouncedSearchParam, fetchSearchMovie]);
 
+  // 검색 결과가 있는 경우
+  if (searchMovies?.length) {
+    return (
+      <section className="search-container">
+        {searchMovies.map((movie: any) => {
+          if (movie.backdrop_path !== null && movie.media_type !== "person") {
+            const movieImageUrl = `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`;
+
+            return (
+              <div className="movie" key={movie.id}>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/${movie.id}`)}
+                  className="movie__column-poster"
+                  aria-label={`${movie.title} 영화 상세 페이지로 이동`}
+                >
+                  <img
+                    src={movieImageUrl}
+                    alt={movie.title}
+                    className="movie__poster"
+                  />
+                </button>
+              </div>
+            );
+          }
+        })}
+      </section>
+    );
+  }
+
+  // 검색 결과가 없는 경우
   return (
-    <div>
-      {pathname === "/" ? (
-        <Login>Login</Login>
-      ) : (
-        <SearchBox
-          value={searchValue}
-          onChange={handleChange}
-          className="nav__input"
-          type="text"
-          placeholder="검색"
-        />
-      )}
-    </div>
+    <section className="no-results">
+      <div className="no-results__text">
+        <p>
+          찾고자 하는 검색어 "{debouncedSearchParam}"에 대한 결과가 없습니다.
+        </p>
+      </div>
+    </section>
   );
 };
 

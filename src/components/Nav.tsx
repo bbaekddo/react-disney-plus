@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 // NavWrapper props 타입 정의
@@ -34,8 +35,43 @@ const Logo = styled.a`
   }
 `;
 
+const SearchBox = styled.input`
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background-color: white
+  border-radius: 5px;
+  color: black;
+  padding: 5px;
+  border: none;
+`;
+
+const Login = styled.a`
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border: 1px solid #f9f9f9;
+  transition: all 0.2s ease 0s;
+
+  &:hover {
+    background-color: #f9f9f9;
+    color: #000;
+    border-color: transparent;
+  }
+`;
+
 const Nav = () => {
+  const { pathname } = useLocation();
   const [show, setShow] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
+
+  // 검색어 변경 이벤트 핸들러
+  const moveSearchPage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    navigate(`/search?query=${e.target.value}`);
+  };
 
   useEffect(() => {
     const handle_scroll = (): void => {
@@ -68,6 +104,17 @@ const Nav = () => {
           <img alt="Disney Plus Logo" src="/images/logo.svg" />
         </button>
       </Logo>
+
+      {pathname === "/" ? (
+        <Login>Login</Login>
+      ) : (
+        <SearchBox
+          className="nav__input"
+          placeholder="검색어를 입력하세요."
+          value={searchValue}
+          onChange={moveSearchPage}
+        />
+      )}
     </NavWrapper>
   );
 };
