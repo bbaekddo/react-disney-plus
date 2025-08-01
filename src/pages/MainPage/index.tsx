@@ -1,4 +1,3 @@
-import React, { JSX } from "react";
 import Category from "../../components/Category";
 import Nav from "../../components/Nav";
 import Banner from "../../components/Banner";
@@ -29,7 +28,7 @@ const Container = styled.main`
   }
 `;
 
-const MainPage = (): JSX.Element => {
+const MainPage = () => {
   return (
     <Container>
       <Nav />

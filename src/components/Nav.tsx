@@ -1,4 +1,4 @@
-import React, { JSX, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 // NavWrapper props 타입 정의
@@ -34,7 +34,7 @@ const Logo = styled.a`
   }
 `;
 
-const Nav: React.FC = (): JSX.Element => {
+const Nav = () => {
   const [show, setShow] = useState<boolean>(false);
 
   useEffect(() => {

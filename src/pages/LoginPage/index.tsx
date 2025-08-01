@@ -1,7 +1,5 @@
-import { JSX } from "react";
-
 // LoginPage 컴포넌트 (구현 예정)
-const LoginPage = (): JSX.Element => {
+const LoginPage = () => {
   return <div>LoginPage</div>;
 };
 
