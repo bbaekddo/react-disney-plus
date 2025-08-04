@@ -15,6 +15,10 @@ const MovieModal = ({
 	// 영화 모달만 추출
 	const movieModalRef = useRef<HTMLDivElement>(null);
 
+	useOnclickOutside(movieModalRef, () => {
+		setModalOpen(false);
+	});
+
 	return (
 		<div className="presentation" role="presentation">
 			<div className="wrapper-modal">
