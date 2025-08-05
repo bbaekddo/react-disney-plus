@@ -77,8 +77,7 @@ const Banner = () => {
               src={`https://www.youtube.com/embed/${movie?.videos?.results[0]?.key}?controls=0&autoplay=1&loop=1&mute=1&playlist=${movie?.videos?.results[0]?.key}`}
               width="640"
               height="360"
-              frameBorder="0"
-              allow="autoplay"
+              allow="autoplay;"
               allowFullScreen
             />
           </HomeContainer>
@@ -100,10 +99,11 @@ const Banner = () => {
         height: 500,
       }}
     >
-      <div className="banner__contents">
+      <div style={{ fontSize: 10 }} className="banner__contents">
         <h1 className="banner__title">
           {movie?.title || movie?.name || movie?.original_name}
         </h1>
+
         <div className="banner__buttons">
           {movie?.videos?.results[0]?.key && (
             <button
@@ -115,10 +115,11 @@ const Banner = () => {
             </button>
           )}
         </div>
+        <p className="banner__description">
+          {truncateDescription(movie?.overview, 100)}
+        </p>
       </div>
-      <p className="banner__description">
-        {truncateDescription(movie?.overview, 100)}
-      </p>
+      <div className="banner--fadeBottom" />
     </header>
   );
 };
