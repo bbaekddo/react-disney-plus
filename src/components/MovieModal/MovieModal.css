@@ -59,6 +59,7 @@
 }
 
 .modal__overview {
+  padding: 10px 20px;
   font-size: 20px;
   line-height: 1.5;
 }

@@ -26,17 +26,12 @@ const MovieModal = ({
 					{/* 모달 닫기 버튼 */}
 					<button
 						type="button"
-						// onClick={() =>
-						// 	useOnclickOutside(movieModalRef, () => {
-						// 		setModalOpen(false);
-						// 	})
-						// }
 						className="modal-close"
 						aria-label="모달 닫기"
+						onClick={() => setModalOpen(false)}
 					>
 						X
 					</button>
-
 					{/* 포스터 이미지 */}
 					<img
 						className="modal__poster-img"
