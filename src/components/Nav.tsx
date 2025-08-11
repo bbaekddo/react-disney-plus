@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // NavWrapper props 타입 정의
 interface NavWrapperProps {
@@ -63,15 +64,29 @@ const Login = styled.a`
 `;
 
 const Nav = () => {
+  // 상태 관리
   const { pathname } = useLocation();
   const [show, setShow] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
 
   // 검색어 변경 이벤트 핸들러
   const moveSearchPage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
     navigate(`/search?query=${e.target.value}`);
+  };
+
+  // 인증 처리
+  const handleAuth = (): void => {
+    signInWithPopup(auth, provider)
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   };
 
   useEffect(() => {
@@ -107,7 +122,7 @@ const Nav = () => {
       </Logo>
 
       {pathname === "/" ? (
-        <Login onClick={() => navigate("/login")}>Login</Login>
+        <Login onClick={handleAuth}>Login</Login>
       ) : (
         <SearchBox
           className="nav__input"
