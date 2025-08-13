@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
+import firebaseServices from "../firebase";
 
 // NavWrapper props 타입 정의
 interface NavWrapperProps {
@@ -40,7 +41,7 @@ const SearchBox = styled.input`
   position: fixed;
   left: 50%;
   transform: translate(-50%, 0);
-  background-color: white
+  background-color: white;
   border-radius: 5px;
   color: black;
   padding: 5px;
@@ -69,8 +70,7 @@ const Nav = () => {
   const [show, setShow] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
-  const auth = getAuth();
-  const provider = new GoogleAuthProvider();
+  const { auth, provider } = firebaseServices;
 
   // 검색어 변경 이벤트 핸들러
   const moveSearchPage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,13 +81,23 @@ const Nav = () => {
   // 인증 처리
   const handleAuth = (): void => {
     signInWithPopup(auth, provider)
-    .then((result) => {
-      console.log(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user && pathname === "/") {
+        navigate("/main");
+      } else {
+        navigate("/");
+      }
+    });
+  }, [auth, navigate, pathname]);
 
   useEffect(() => {
     const handle_scroll = (): void => {
