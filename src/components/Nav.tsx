@@ -64,11 +64,51 @@ const Login = styled.a`
   }
 `;
 
+const UserImg = styled.img`
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+`;
+
+const DropDown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 50%) 0 0 18px 0;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100%;
+  opacity: 0;
+`;
+
+const SignOut = styled.div`
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
+`;
+
 const Nav = () => {
   // 상태 관리
   const { pathname } = useLocation();
   const [show, setShow] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
+  const [userData, setUserData] = useState<any>({});
   const navigate = useNavigate();
   const { auth, provider } = firebaseServices;
 
@@ -83,6 +123,19 @@ const Nav = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // 로그아웃
+  const handleSignOut = (): void => {
+    auth
+      .signOut()
+      .then(() => {
+        setUserData({});
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);
@@ -134,12 +187,22 @@ const Nav = () => {
       {pathname === "/" ? (
         <Login onClick={handleAuth}>Login</Login>
       ) : (
-        <SearchBox
-          className="nav__input"
-          placeholder="검색어를 입력하세요."
-          value={searchValue}
-          onChange={moveSearchPage}
-        />
+        <>
+          <SearchBox
+            value={searchValue}
+            onChange={moveSearchPage}
+            className="nav__input"
+            type="text"
+            placeholder="검색어를 입력하세요."
+          />
+
+          <SignOut onClick={handleSignOut}>
+            <UserImg src={userData?.photoURL} alt="UserPhoto" />
+            <DropDown>
+              <span>Sign Out</span>
+            </DropDown>
+          </SignOut>
+        </>
       )}
     </NavWrapper>
   );
