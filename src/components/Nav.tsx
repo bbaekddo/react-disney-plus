@@ -6,7 +6,7 @@ import firebaseServices from "../firebase";
 
 // NavWrapper props 타입 정의
 interface NavWrapperProps {
-  show: boolean;
+  $show: boolean;
 }
 
 const NavWrapper = styled.nav<NavWrapperProps>`
@@ -15,7 +15,7 @@ const NavWrapper = styled.nav<NavWrapperProps>`
   left: 0;
   right: 0;
   height: 70px;
-  background-color: ${(props) => (props.show ? "#090b13" : "transparent")};
+  background-color: ${(props) => (props.$show ? "#090b13" : "transparent")};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -85,7 +85,7 @@ const DropDown = styled.div`
   opacity: 0;
 `;
 
-const SignOut = styled.div`
+const Logout = styled.div`
   position: relative;
   height: 48px;
   width: 48px;
@@ -105,10 +105,13 @@ const SignOut = styled.div`
 
 const Nav = () => {
   // 상태 관리
+  const initialUserData = localStorage.getItem("userData")
+    ? JSON.parse(localStorage.getItem("userData") || "")
+    : {};
   const { pathname } = useLocation();
   const [show, setShow] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
-  const [userData, setUserData] = useState<any>({});
+  const [userData, setUserData] = useState<any>(initialUserData);
   const navigate = useNavigate();
   const { auth, provider } = firebaseServices;
 
@@ -122,7 +125,8 @@ const Nav = () => {
   const handleAuth = (): void => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        console.log(result);
+        setUserData(result.user);
+        localStorage.setItem("userData", JSON.stringify(result.user));
       })
       .catch((err) => {
         console.log(err);
@@ -130,11 +134,12 @@ const Nav = () => {
   };
 
   // 로그아웃
-  const handleSignOut = (): void => {
+  const handleLogout = (): void => {
     auth
       .signOut()
       .then(() => {
         setUserData({});
+        localStorage.removeItem("userData");
         navigate("/");
       })
       .catch((err) => {
@@ -143,13 +148,24 @@ const Nav = () => {
   };
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user && pathname === "/") {
-        navigate("/main");
+    // 인증 상태 변경 시 처리
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 루트 페이지에 있으면 메인으로 이동
+        if (pathname === "/") {
+          navigate("/main");
+        }
+        // 다른 페이지에 있으면 그대로 유지
       } else {
-        navigate("/");
+        // 루트 페이지가 아닌 경우만 리다이렉션
+        if (pathname !== "/") {
+          navigate("/");
+        }
       }
     });
+
+    // 컴포넌트 언마운트 시 구독 해제
+    return () => unsubscribe();
   }, [auth, navigate, pathname]);
 
   useEffect(() => {
@@ -165,7 +181,7 @@ const Nav = () => {
   }, []);
 
   return (
-    <NavWrapper show={show}>
+    <NavWrapper $show={show}>
       <Logo>
         <button
           type="button"
@@ -196,12 +212,12 @@ const Nav = () => {
             placeholder="검색어를 입력하세요."
           />
 
-          <SignOut onClick={handleSignOut}>
+          <Logout onClick={handleLogout}>
             <UserImg src={userData?.photoURL} alt="UserPhoto" />
             <DropDown>
               <span>Sign Out</span>
             </DropDown>
-          </SignOut>
+          </Logout>
         </>
       )}
     </NavWrapper>
